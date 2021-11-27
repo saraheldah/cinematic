@@ -1,0 +1,31 @@
+<div class="FormContainer wrapper">
+    <div class="FormContent">
+
+        <h2> Please fill the following form</h2>
+
+        <form [formGroup]="theaterForm" (ngSubmit)="onSubmit()" class="theaterForm">
+      <!--       <input type="number" name="id" formControlName="id" placeholder="id">
+            <div
+                *ngIf="theaterForm.get('id')?.invalid && (theaterForm.get('id')?.dirty || theaterForm.get('id')?.touched)">
+                Please provide an Id.
+            </div> -->
+            <input type="text" name="name" formControlName="name" placeholder="name">
+            <div
+                *ngIf="theaterForm.get('name')?.invalid && (theaterForm.get('name')?.dirty || theaterForm.get('name')?.touched)">
+                Please provide a name.
+            </div>
+            <input type="text" name="location" formControlName="location" placeholder="location">
+            <div
+                *ngIf="theaterForm.get('location')?.invalid && (theaterForm.get('location')?.dirty || theaterForm.get('location')?.touched)">
+                Please provide a location.
+            </div>
+         <!--    <input type="number" name="seatsNumber" formControlName="seatsNumber" placeholder="number of seats">
+            <div
+                *ngIf="theaterForm.get('seatsNumber')?.invalid && (theaterForm.get('seatsNumber')?.dirty || theaterForm.get('seatsNumber')?.touched)">
+                Please provide a seat.
+            </div> -->
+
+            <button class="Btn" type="submit">Save</button>
+        </form>
+    </div>
+</div>

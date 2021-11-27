@@ -1,0 +1,28 @@
+<div class="SignInContainer wrapper">
+    <div class="FormContent">
+
+        <h2> Sign In </h2>
+
+        <div *ngIf="registrationSuccess" class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Registration Completed !</strong> you can now sign in with you acount.
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="loginForm">
+            <input type="email" name="email" formControlName="email" placeholder="email">
+            <div *ngIf="loginForm.get('id')?.invalid && (loginForm.get('id')?.dirty || loginForm.get('id')?.touched)">
+                the email address is incorrect.
+            </div>
+            <input type="password" name="password" formControlName="password" placeholder="password">
+            <div
+                *ngIf="loginForm.get('code')?.invalid && (loginForm.get('code')?.dirty || loginForm.get('code')?.touched)">
+                incorrect password.
+            </div>
+            <button class="Btn" type="submit">LOG IN</button>
+        </form>
+
+        <div class="FormFooter">
+            <a class="UnderlineHover" [routerLink]="['/register']">SIGN UP</a>
+        </div>
+
+    </div>
+</div>

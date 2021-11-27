@@ -1,0 +1,40 @@
+<div class="SignInContainer wrapper">
+    <div class="FormContent">
+        <h2> Sign Up </h2>
+
+        <div *ngIf="!isValid" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Registration Faild!</strong> your password and confirmation password don't match.
+        </div>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="registerForm">
+            <input type="text" name="username" formControlName="username" placeholder="username">
+            <div *ngIf="registerForm.get('username')?.invalid && (registerForm.get('username')?.dirty || registerForm.get('username')?.touched)">
+                the username is not available
+            </div>
+            <input type="email" name="email" formControlName="email" placeholder="email">
+            <div *ngIf="registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched)">
+                the email address is invalid
+            </div>
+            <input type="text" name="phone" formControlName="phone" placeholder="phone">
+            <div *ngIf="registerForm.get('phone')?.invalid && (registerForm.get('phone')?.dirty || registerForm.get('phone')?.touched)">
+                please enter phone number.
+            </div>
+            <input type="password" name="password" formControlName="password" placeholder="password">
+            <div
+                *ngIf="registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)">
+                please enter a valid password.
+            </div>
+            <input type="password" name="confirmPassword" formControlName="confirmPassword" placeholder="confirm password">
+            <div
+                *ngIf="registerForm.get('confirmPassword')?.invalid && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)">
+                please confirm password.
+            </div>
+            <button class="Btn" type="submit">REGISTER</button>
+        </form>
+
+        <div class="FormFooter">
+            <a class="UnderlineHover" [routerLink]="['/login']">LOG IN</a>
+        </div>
+
+    </div>
+</div>

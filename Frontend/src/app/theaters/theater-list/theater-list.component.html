@@ -1,0 +1,29 @@
+<body class="bg-dark">
+    <section class="py-7 bg-dark top-right bottom-right TheatersContainer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mx-auto text-center">
+                    <h2 class="text-white heading-black">Select your Theater</h2>
+                    <p class="text-light lead">Choose your preferable Location</p>
+                </div>
+            </div>
+            <div class="row pt-5">
+                <div class="col-12 mx-auto">
+                    <div class="card-deck">
+                        <div class="container">
+                            <div class="row mt-5">
+                                <div class="col-md-4 mx-auto" *ngFor="let theater of theaters">
+                                    <app-theater-item [theater]="theater" (onDeleteTheater)="deleteTheater(theater)">
+                                    </app-theater-item>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="Btn" routerLink="/theaters/theater-form" style="margin-top: 30px;">
+            Add Theater <fa-icon [ngStyle]="{'color': '#fffff'}" [icon]="faPlus"></fa-icon>
+        </button>
+    </section>
+</body>

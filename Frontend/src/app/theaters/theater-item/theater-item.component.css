@@ -1,0 +1,19 @@
+.card {
+    background-color: #272b30;
+}
+
+.card:hover{
+    opacity: 0.8;
+}
+
+.text-primary { 
+    color: #b64747 !important;
+}
+
+.btn {
+   color: #b64747;
+}
+
+.btn:hover {
+    background-color: white;
+}
