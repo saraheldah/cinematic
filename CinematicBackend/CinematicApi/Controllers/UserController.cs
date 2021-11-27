@@ -1,7 +1,10 @@
+using System;
+using Cinematic.Business.Managers;
 using Cinematic.DataAccess.Entities;
 using Cinematic.DataAccess.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 
 namespace CinematicBackend.Controllers
 {
@@ -10,24 +13,24 @@ namespace CinematicBackend.Controllers
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
-        private readonly IUserRepository _userRepository;
+        private readonly IUserManager _userManager;
 
-        public UserController(IUserRepository userRepository,ILogger<UserController> logger)
+        public UserController(IUserManager userManager,ILogger<UserController> logger)
         {
             _logger = logger;
-            _userRepository = userRepository;
+            _userManager = userManager;
         }
         
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(_userRepository.GetAll()); 
+            return Ok(_userManager.GetAll()); 
         }
         
         [HttpGet("{id}")]
-        public ActionResult GetById(int id)
+        public ActionResult GetById(Guid id)
         {
-            var user = _userRepository.Get(id);
+            var user = _userManager.Get(id);
             if (user != null)
             {
                 return Ok(user);
@@ -38,29 +41,27 @@ namespace CinematicBackend.Controllers
         [HttpPost()]
         public ActionResult Create([FromBody] User newUser)
         {
-            _userRepository.Add(newUser);
+            _userManager.Add(newUser);
             return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + newUser.Id,newUser); 
         }
         
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
-            var user = _userRepository.Get(id);
-            if (user != null)
-            {
-                _userRepository.Delete(user);
-                return Ok();
-            }
-            return NotFound($"the requested user of Id {id} was not found");
+            var user = _userManager.Get(id);
+            if (user == null) return NotFound($"the requested user of Id {id} was not found");
+            _userManager.DeleteUser(id);
+            return Ok();
         }
         
-        [HttpPut("id")] 
-        public IActionResult Update(int id,[FromBody] User newUser)
+        [Route("Update")]
+        [HttpPost()] 
+        public IActionResult Update([FromQuery]Guid id,[FromBody] User newUser)
         {
-            var user = _userRepository.Get(id);
+            var user = _userManager.Get(id);
             if (user != null)
             {
-                _userRepository.Update(id,newUser);
+                _userManager.Update(id,newUser);
             }
             return Ok(user);
         }

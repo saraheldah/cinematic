@@ -1,46 +1,52 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cinematic.DataAccess.Entities;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+
 
 namespace Cinematic.DataAccess.Repositories
 {
     public class TheaterRepository : ITheaterRepository
     {
-        static List<Theater> _theaters;
+        private readonly IMongoCollection<Theater> _theaterCollection;
 
-        public TheaterRepository()
+
+        public TheaterRepository(IMongoClient client)
         {
-            if (_theaters == null)
-            {
-                _theaters = new List<Theater>();
-            }
+            var database = client.GetDatabase("cinematic");
+            _theaterCollection = database.GetCollection<Theater>("theater");
         }
 
         public List<Theater> GetAll()
         {
-            return _theaters;
+            return _theaterCollection.Find(new BsonDocument()).ToList();
         }
-        public Theater Get(int id)
+        public Theater Get(Guid id)
         {
-            return _theaters.SingleOrDefault(x => x.Id == id);
+            var filter = Builders<Theater>.Filter.Eq("Id", id);
+            return _theaterCollection.Find(filter).First();
         }
     
         public void Add(Theater theater)
         {
-            _theaters.Add(theater);
+            theater.Id = Guid.NewGuid();
+            _theaterCollection.InsertOne(theater);
         }
 
-        public void Delete(Theater theater)
+        public void Delete(Guid id)
         {
-            _theaters.Remove(theater);
+            var filter = Builders<Theater>.Filter.Eq("Id", id);
+            _theaterCollection.DeleteOne(filter);
         }
 
-        public void Update(int id, Theater theater)
+        public void Update(Guid id, Theater theater)
         {
-            var updatedTheater = _theaters.SingleOrDefault(x => x.Id == id);
-            updatedTheater.Name = theater.Name;
-            updatedTheater.Location = theater.Location;
-            updatedTheater.SeatsNumber = theater.SeatsNumber;
+            var filter = Builders<Theater>.Filter.Eq("Id",id);
+            var update = Builders<Theater>.Update.Set(s => s.Name, theater.Name).Set(s=>s.Location, theater.Location);
+            _theaterCollection.UpdateOne(filter, update);
         }
     }
 }

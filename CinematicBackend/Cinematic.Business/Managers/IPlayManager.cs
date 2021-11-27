@@ -9,16 +9,18 @@ namespace Cinematic.Business.Managers
     {
        List<PlayDTO> GetAll();
 
-       PlayDTO Get(int id);
+       PlayDTO Get(Guid id);
 
-       void Add(Play newPlay);
+       List<PlayDTO> GetPlayByTheaterId(Guid id);
+
+       void Add(PlayDTO newPlay,Guid id);
 
        Play PlayEntity(string title, DateTime time, string category);
 
-       void Update(int id, Play updatedplay);
+       void Update(Guid id, Play updatedplay);
 
-       Play UpdatedplayEntity(string title, DateTime time, string category);
+       Play UpdatedplayEntity(string title, string category, int duration);
 
-       void DeleteSeat(Play play);
+       void Delete(Guid playId);
     }
 }

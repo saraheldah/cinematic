@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cinematic.Business.Managers;
 using Cinematic.Business.Mapping;
+// using Cinematic.DataAccess.MongoDbSettings;
 using Cinematic.DataAccess.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 
 namespace CinematicBackend
 {
@@ -30,10 +32,13 @@ namespace CinematicBackend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<MongoDbSettings.MongoDbSettings>(Configuration.GetSection("MongoDbSettings"));
-            services.AddSingleton<MongoDbSettings.MongoDbSettings>(serviceProvider =>
-                serviceProvider.GetRequiredService<IOptions<MongoDbSettings.MongoDbSettings>>().Value);
+            services.AddSingleton<IMongoClient, MongoClient>(s =>
+            {
+                var uri = s.GetRequiredService<IConfiguration>()["MongoUri"];
+                return new MongoClient(uri);
+            });
             services.AddControllers();
+            services.AddCors();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "CinematicApi", Version = "v1"});
@@ -48,7 +53,6 @@ namespace CinematicBackend
             services.AddTransient<ITheaterRepository, TheaterRepository>();
             services.AddTransient<IPlayRepository, PlayRepository>();
             services.AddTransient<ISeatRepository, SeatRepository>();
-
         }
 
         // Install MongoDB driver as NuGetPackage => in this package there is Client use this client as instance =>getDatabase=>getCollection
@@ -63,13 +67,14 @@ namespace CinematicBackend
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CinematicApi v1"));
             }
-
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }

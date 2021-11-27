@@ -9,16 +9,16 @@ namespace Cinematic.Business.Managers
     {
         List<TheaterDTO> GetAll();
 
-        TheaterDTO Get(int id);
+        TheaterDTO Get(Guid id);
 
-        void Add(Theater newTheater);
+        void Add(TheaterDTO newTheater);
 
-        Theater TheaterEntity(string name, string location, int seatsNumber);
+        Theater TheaterEntity(string name, string location);
 
-        void Update(int id, Theater updatedTheater);
+        void Update(Guid id, TheaterDTO updatedTheater);
 
-        Theater UpdatedTheaterEntity(string name, string location, int seatsNumber);
+        Theater UpdatedTheaterEntity(string name, string location);
 
-        void DeleteTheater(Theater theater);
+        void DeleteTheater(Guid theaterId);
     }
 }

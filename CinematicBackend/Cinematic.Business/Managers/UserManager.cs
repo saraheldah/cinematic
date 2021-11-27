@@ -26,7 +26,7 @@ namespace Cinematic.Business.Managers
             return userDtoList;
         }
         
-        public UserDTO Get(int id)
+        public UserDTO Get(Guid id)
         {
             var userEntity = _userRepository.Get(id);
             if (userEntity == null) throw new Exception("user not found");
@@ -51,7 +51,7 @@ namespace Cinematic.Business.Managers
             return newUser;
         }
         
-        public void Update(int id, User updatedUser)
+        public void Update(Guid id, User updatedUser)
         {
             _userRepository.Update(id,updatedUser);
         }
@@ -68,9 +68,9 @@ namespace Cinematic.Business.Managers
             return updatedUser;
         }
         
-        public void DeleteUser(User user)
+        public void DeleteUser(Guid userId)
         {
-            _userRepository.Delete(user);
+            _userRepository.Delete(userId);
         }
     }
 }

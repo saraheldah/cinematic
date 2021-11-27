@@ -10,16 +10,16 @@ namespace Cinematic.Business.Managers
     public interface ISeatManager
     {
         List<SeatDTO> GetAll();
-        SeatDTO Get(int id);
+        SeatDTO Get(Guid id);
 
         void Add(Seat newSeat);
 
-        Seat SeatEntity(string row, string number, int theaterId,int playId,int userId);
+        Seat SeatEntity(string row, string number, Guid theaterId,Guid playId,Guid userId);
 
-        void Update(int id, Seat updatedSeat);
+        void Update(Guid id, Seat updatedSeat);
 
-        Seat UpdatedSeatEntity(string row, string number, int theaterId,int playId,int userId);
+        Seat UpdatedSeatEntity(string row, string number, Guid theaterId,Guid playId,Guid userId);
 
-        void DeleteSeat(Seat seat);
+        void Delete(Guid seatId);
     }
 }

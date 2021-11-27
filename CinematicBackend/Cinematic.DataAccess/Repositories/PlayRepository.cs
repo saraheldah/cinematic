@@ -1,46 +1,56 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cinematic.DataAccess.Entities;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Cinematic.DataAccess.Repositories
 {
     public class PlayRepository : IPlayRepository
     {
-        static List<Play> _plays;
+        private readonly IMongoCollection<Play> _playCollection;
 
-        public PlayRepository()
+        public PlayRepository(IMongoClient client)
         {
-            if (_plays == null)
-            {
-                _plays = new List<Play>();
-            }
+            var database = client.GetDatabase("cinematic");
+            _playCollection = database.GetCollection<Play>("play");
         }
         public List<Play> GetAll()
         {
-            return _plays;
+            return _playCollection.Find(new BsonDocument()).ToList();
         }
         
-        public Play Get(int id)
+        public Play Get(Guid id)
         {
-            return _plays.SingleOrDefault(x => x.Id == id);
+            var filter = Builders<Play>.Filter.Eq("Id",id);
+            return _playCollection.Find(filter).First();
+        }
+        
+        public List<Play> GetPlayByTheaterId(Guid id)
+        {
+            var filter = Builders<Play>.Filter.Eq("TheaterId", id);
+            return _playCollection.Find(filter).ToList();
         }
     
-        public void Add(Play play)
+        public void Add(Play play,Guid id)
         {
-            _plays.Add(play);
+            play.Id = Guid.NewGuid();
+            play.TheaterId = id;
+            _playCollection.InsertOne(play);
         }
 
-        public void Delete(Play play)
+        public void Delete(Guid playId)
         {
-            _plays.Remove(play);
+            var filter = Builders<Play>.Filter.Eq("Id", playId);
+            _playCollection.DeleteOne(filter);
         }
 
-        public void Update(int id,Play play)
+        public void Update(Guid id,Play play)
         {
-            var updatedPlay = _plays.SingleOrDefault(x => x.Id == id);
-            updatedPlay.Title = play.Title;
-            updatedPlay.Time = play.Time;
-            updatedPlay.Category = play.Category;
+            var filter = Builders<Play>.Filter.Eq("Id",id);
+            var update = Builders<Play>.Update.Set(s => s.Title, play.Title).Set(s=>s.Category, play.Category).Set(s=>s.Duration,play.Duration);
+            _playCollection.UpdateOne(filter, update);
         }
     }
 }

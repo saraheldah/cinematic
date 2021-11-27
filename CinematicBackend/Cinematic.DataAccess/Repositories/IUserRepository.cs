@@ -7,9 +7,9 @@ namespace Cinematic.DataAccess.Repositories
     public interface IUserRepository
     {
         List<User> GetAll();
-        User Get(int id);
-        User Add(User user);
-        void Delete(User user);
-        void Update(int id,User newUser);
+        User Get(Guid id);
+        void Add(User user);
+        void Delete(Guid userId);
+        void Update(Guid id,User newUser);
     }
 }

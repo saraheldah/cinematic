@@ -11,10 +11,14 @@ namespace Cinematic.Business.Managers
     public class PlayManager : IPlayManager
     {
         protected readonly IPlayRepository _playRepository;
+        protected readonly ITheaterRepository _theaterRepository;
+        protected readonly ISeatRepository _seatRepository;
         protected readonly IMapper _mapper;
-        public PlayManager(IPlayRepository playRepository, IMapper mapper)
+        public PlayManager(IPlayRepository playRepository,ITheaterRepository theaterRepository,ISeatRepository seatRepository, IMapper mapper)
         {
             _playRepository = playRepository;
+            _theaterRepository = theaterRepository;
+            _seatRepository = seatRepository;
             _mapper = mapper;
         }
         
@@ -25,17 +29,32 @@ namespace Cinematic.Business.Managers
             return playDtoList;
         }
         
-        public PlayDTO Get(int id)
+        public PlayDTO Get(Guid id)
         {
             var playEntity = _playRepository.Get(id);
-            if (playEntity == null) throw new Exception("play not available");
+            var theaterEntityList = _theaterRepository.GetAll().ToList();
+            var seatEntityList = _seatRepository.GetAll().ToList();
+            if (playEntity == null) throw new Exception("play is not available");
             var playDto = _mapper.Map<PlayDTO>(playEntity);
+            // foreach (var theater in theaterEntityList)
+            // {
+            //     var theaterEntities = theaterEntityList.ToList().Where(x=>x.Id );
+            //     
+            // }
             return playDto;
         }
         
-        public void Add(Play newPlay)
+        public List<PlayDTO> GetPlayByTheaterId(Guid id)
         {
-            _playRepository.Add(newPlay);
+            var playsEntity =_playRepository.GetPlayByTheaterId(id);
+            if (playsEntity == null) throw new Exception("play is not available");
+            var playDto = _mapper.Map<List<PlayDTO>>(playsEntity);
+            return playDto;
+        }
+        public void Add(PlayDTO newPlay,Guid id)
+        {
+            var play = _mapper.Map<Play>(newPlay);
+            _playRepository.Add(play,id);
         }
         
         public Play PlayEntity(string title,DateTime time,string category)
@@ -43,31 +62,30 @@ namespace Cinematic.Business.Managers
             Play newPlay = new Play
             {
                 Title = title,
-                Time = time,
                 Category = category
             };
             return newPlay;
         }
         
-        public void Update(int id, Play updatedplay)
+        public void Update(Guid id, Play updatedplay)
         {
             _playRepository.Update(id,updatedplay);
         }
         
-        public Play UpdatedplayEntity(string title,DateTime time,string category)
+        public Play UpdatedplayEntity(string title,string category,int duration)
         {
             Play updatedPlay = new Play
             {
                 Title = title,
-                Time = time,
-                Category = category
+                Category = category,
+                Duration = duration
             };
             return updatedPlay;
         }
         
-        public void DeleteSeat(Play play)
+        public void Delete(Guid playId)
         {
-            _playRepository.Delete(play);
+            _playRepository.Delete(playId);
         }
     }
 }

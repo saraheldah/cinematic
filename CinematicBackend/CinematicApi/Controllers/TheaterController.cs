@@ -1,35 +1,37 @@
+using System;
 using System.Collections.Generic;
+using Cinematic.Business.DTO;
+using Cinematic.Business.Managers;
 using Cinematic.DataAccess.Entities;
 using Cinematic.DataAccess.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MongoDB.Driver;
 
 namespace CinematicBackend.Controllers
 {
-    [Route("api/[controller]")] //that means that our controller is going to listen to anything that comes with the path api/controller
+    [Route("api/[controller]")] 
     [ApiController]
     public class TheaterController : ControllerBase
     {
         private readonly ILogger<TheaterController> _logger;
-        private readonly ITheaterRepository _theaterRepository;
+        private readonly ITheaterManager _theaterManager;
 
-        public TheaterController(ITheaterRepository theaterRepository,ILogger<TheaterController> logger)
+        public TheaterController(ITheaterManager theaterManager,ILogger<TheaterController> logger)
         {
             _logger = logger;
-            _theaterRepository = theaterRepository;
+            _theaterManager = theaterManager;
         }
         
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(_theaterRepository.GetAll()); 
+            return Ok(_theaterManager.GetAll()); 
         }
         
-        [HttpGet("{id}")] // the path becomes => id/courses/id 
-        public ActionResult GetById(int id)
+        [HttpGet("{id}")] 
+        public ActionResult GetById(Guid id)
         {
-            var theater = _theaterRepository.Get(id);
+            var theater = _theaterManager.Get(id);
             if (theater != null)
             {
                 return Ok(theater);
@@ -38,31 +40,29 @@ namespace CinematicBackend.Controllers
         }
         
         [HttpPost()]
-        public ActionResult Create([FromBody] Theater newTheater)
+        public ActionResult Create([FromBody]TheaterDTO newTheater)
         {
-            _theaterRepository.Add(newTheater);
+            _theaterManager.Add(newTheater);
             return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + newTheater.Id,newTheater); 
         }
         
-        [HttpDelete("{id}")] // the path becomes => id/theater/id 
-        public ActionResult Delete(int id)
+        [HttpDelete("{id}")] 
+        public ActionResult Delete(Guid id)
         {
-            var theater = _theaterRepository.Get(id);
-            if (theater != null)
-            {
-                _theaterRepository.Delete(theater);
-                return Ok();
-            }
-            return NotFound($"the requested theater of Id {id} was not found");
+            var theater = _theaterManager.Get(id);
+            if (theater == null) return NotFound($"the requested theater of Id {id} was not found");
+            _theaterManager.DeleteTheater(id);
+            return Ok();
         }
         
-        [HttpPut("id")] // the path becomes => id/theater/id 
-        public IActionResult Update(int id,[FromBody] Theater newTheater)
+        [Route("Update")]
+        [HttpPost] 
+        public IActionResult Update([FromQuery]Guid id, [FromBody]TheaterDTO newTheater)
         {
-            var theater = _theaterRepository.Get(id);
+            var theater = _theaterManager.Get(id);
             if (theater != null)
             {
-                _theaterRepository.Update(id,newTheater);
+                _theaterManager.Update(id,newTheater);
             }
             return Ok(theater);
         }

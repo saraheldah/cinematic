@@ -2,50 +2,48 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cinematic.DataAccess.Entities;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Cinematic.DataAccess.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        static List<User> _users;
+        private readonly IMongoCollection<User> _userCollection;
 
-        public UserRepository()
+        public UserRepository(IMongoClient client)
         {
-            if (_users == null)
-            {
-                _users = new List<User>();
-            }
+            var database = client.GetDatabase("cinematic");
+            _userCollection = database.GetCollection<User>("user");
         }
         
         public List<User> GetAll()
         {
-            return _users;
+            return _userCollection.Find(new BsonDocument()).ToList();
         }
 
-        public User Get(int id)
+        public User Get(Guid id)
         {
-            // return _users.Find(id);
-            return _users.SingleOrDefault(x => x.Id == id);
+            var filter = Builders<User>.Filter.Eq("Id", id);
+            return _userCollection.Find(filter).First();
         }
 
-        public User Add(User user)
+        public void Add(User user)
         {
-            // _users.Insert(user);
-            _users.Add(user);
-            return user;
+            user.Id = Guid.NewGuid();
+            _userCollection.InsertOne(user);
         }
 
-        public void Delete(User user)
+        public void Delete(Guid userId)
         {
-            _users.Remove(user);
+            var filter = Builders<User>.Filter.Eq("Id", userId);
+            _userCollection.DeleteOne(filter);
         }
 
-        public void Update(int id, User newUser)
+        public void Update(Guid id, User newUser)
         {
-            var updatedUser = _users.SingleOrDefault(x => x.Id == id);
-            updatedUser.Email = newUser.Email;
-            updatedUser.Password = newUser.Password;
-            updatedUser.Phone = newUser.Phone;
+            var result = _userCollection.ReplaceOne(new BsonDocument("_id", id), newUser,
+                new UpdateOptions {IsUpsert = true});
         }
     }
 }
