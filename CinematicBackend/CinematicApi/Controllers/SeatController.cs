@@ -1,9 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Cinematic.Business.DTO;
 using Cinematic.Business.Managers;
 using Cinematic.DataAccess.Entities;
-using Cinematic.DataAccess.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 // using MongoDB.Driver;
@@ -29,6 +28,13 @@ namespace CinematicBackend.Controllers
             return Ok(_seatManager.GetAll()); 
         }
         
+        [Route("PendingSeats")]
+        [HttpGet]
+        public ActionResult GetPendingSeats()
+        {
+            return Ok(_seatManager.GetPendingSeats()); 
+        }
+        
         [HttpGet("{id}")]
         public ActionResult GetById(Guid id)
         {
@@ -40,22 +46,42 @@ namespace CinematicBackend.Controllers
             return NotFound($"seat with Id: {id} was not found");
         }
         
-        // [HttpGet("Reserved")]
-        // public ActionResult GetSeats(Guid playId)
-        // {
-        //     var seat = _seatManager.Find(playId);
-        //     if (seat != null)
-        //     {
-        //         return Ok(seat);
-        //     }
-        //     return NotFound($"seat with Id: {playId} was not found");
-        // }
-        
-        [HttpPost()]
-        public ActionResult Create([FromBody] Seat newSeat)
+        [Route("Seats")]
+        [HttpGet]
+        public ActionResult GetSeats(Guid playId,Guid userId)
         {
-            _seatManager.Add(newSeat);
-            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + newSeat.Id,newSeat); 
+            var seat = _seatManager.GetSeats(playId,userId);
+            if (seat != null)
+            {
+                return Ok(seat);
+            }
+            return NotFound();
+        }
+        
+        [Route("Create")]
+        [HttpPost]
+        public ActionResult Create(List<SeatDTO> seats,Guid id)
+        {
+            foreach (var seat in seats)
+            {
+                seat.PlayId = id;
+            }
+            _seatManager.Add(seats);
+            return Ok(); 
+        }
+        
+        [HttpPost("Accept/{id}")]
+        public ActionResult Accept(Guid id)
+        {
+            _seatManager.Accept(id);
+            return Ok(); 
+        }
+        
+        [HttpPost("Decline/{id}")]
+        public ActionResult Decline(Guid id)
+        {
+            _seatManager.Decline(id);
+            return Ok(); 
         }
         
         [HttpDelete("{id}")]
@@ -68,17 +94,6 @@ namespace CinematicBackend.Controllers
                 return Ok();
             }
             return NotFound($"the requested seat of Id {id} was not found");
-        }
-        
-        [HttpPut("id")]
-        public IActionResult Update(Guid id,[FromBody] Seat newSeat)
-        {
-            var seat = _seatManager.Get(id);
-            if (seat != null)
-            {
-                _seatManager.Update(id,newSeat);
-            }
-            return Ok(seat);
         }
     }
 }

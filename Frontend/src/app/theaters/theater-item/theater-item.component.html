@@ -2,11 +2,10 @@
     <div class="card-body">
         <h1 class="card-title text-primary mb-0 pt-4">{{theater.name}}</h1>
         <p class="card-text text-white">{{theater.location}}</p>
-        <!-- <p class="card-text text-white">{{theater.seats}} seats</p> -->
-        <a class="btn" (click)="onEdit(theater.id)">
+        <a *ngIf="isAdmin" class="btn" (click)="onEdit(theater.id)">
             <fa-icon [ngStyle]="{'color': '#b64747'}" [icon]="faEdit"></fa-icon>
         </a>
-        <a [routerLink]="['/theaters']" class="btn" (click)="onDelete(theater)" >
+        <a *ngIf="isAdmin" [routerLink]="['/theaters']" class="btn" (click)="onDelete(theater)" >
             <fa-icon [ngStyle]="{'color': '#b64747'}" [icon]="faTimes"></fa-icon>
         </a>
     </div>

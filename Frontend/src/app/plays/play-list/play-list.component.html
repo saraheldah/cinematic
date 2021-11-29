@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div>
-        <button class="Btn" (click)="onClick()" style="margin-top: 30px;">
+        <button *ngIf="isAdmin" class="Btn" (click)="onClick()" style="margin-top: 30px;">
             Add Play <fa-icon [ngStyle]="{'color': '#fffff'}" [icon]="faPlus"></fa-icon>
         </button>
     </section>

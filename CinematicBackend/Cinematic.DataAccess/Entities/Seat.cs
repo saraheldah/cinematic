@@ -18,7 +18,7 @@ namespace Cinematic.DataAccess.Entities
         
         public ReservationStatus Status { get; set; }
         
-        public Guid ReservedByUserId { get; set; }
+        public Guid UserId { get; set; }
         
         public Guid PlayId { get; set; }
     }

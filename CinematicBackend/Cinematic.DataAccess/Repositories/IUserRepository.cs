@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Cinematic.DataAccess.Entities;
 
 namespace Cinematic.DataAccess.Repositories
@@ -8,8 +9,9 @@ namespace Cinematic.DataAccess.Repositories
     {
         List<User> GetAll();
         User Get(Guid id);
-        void Add(User user);
         void Delete(Guid userId);
-        void Update(Guid id,User newUser);
+        bool UserExists(string username);
+        User Login(string username, string password);
+        User Register(User user, string password);
     }
 }

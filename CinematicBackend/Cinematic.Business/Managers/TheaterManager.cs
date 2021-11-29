@@ -11,10 +11,10 @@ namespace Cinematic.Business.Managers
 {
     public class TheaterManager : ITheaterManager
     {
-        protected readonly ITheaterRepository _theaterRepository;
-        protected readonly ISeatRepository _seatRepository;
-        protected readonly IPlayRepository _playRepository;
-        protected readonly IMapper _mapper;
+        private readonly ITheaterRepository _theaterRepository;
+        private readonly ISeatRepository _seatRepository;
+        private readonly IPlayRepository _playRepository;
+        private readonly IMapper _mapper;
         
         public TheaterManager(
             ITheaterRepository theaterRepository,
@@ -57,24 +57,8 @@ namespace Cinematic.Business.Managers
         public TheaterDTO Get(Guid id)
         {
             var theaterEntity = _theaterRepository.Get(id);
-            var playEntityList = _playRepository.GetAll().ToList();
             if (theaterEntity == null) throw new Exception("theater not found");
             var theaterDto = _mapper.Map<TheaterDTO>(theaterEntity);
-            // theaterDto.Plays = new List<PlayDTO>();
-            // foreach (var play in plays)
-            // {
-            //     var playDto = new PlayDTO()
-            //     {
-            //         Id =  play.Id,
-            //         Title = play.Title,
-            //         Category = play.Category,
-            //         Duration = play.Duration
-            //     };
-            //     // get the seat reservation by seat Id and play id
-            //     // if it's null then ignore the reserved by and add the status as free
-            //     // else fill the reservation status and reserved by (here you need to get the user)
-            //     theaterDto.Plays.Add(playDto)
-            // }
             return theaterDto;
         }
         

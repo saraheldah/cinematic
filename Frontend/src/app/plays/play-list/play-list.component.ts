@@ -1,43 +1,54 @@
-import { Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PlayService } from '../shared/play.service';
 import { Play } from '../shared/play.model';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Guid } from 'guid-typescript';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
-import { DataService } from '../shared/data.service'; 
+import { DataService } from '../shared/data.service';
+import { User } from 'src/app/login/shared/user.model';
 
 @Component({
   selector: 'app-play-list',
   templateUrl: './play-list.component.html',
-  styleUrls: ['./play-list.component.css']
+  styleUrls: ['./play-list.component.css'],
 })
 export class PlayListComponent implements OnInit {
-  message!:string;
-plays: Play[];
-theaterId!: Guid;
-faPlus = faPlus;
-  constructor(private playService: PlayService,private route: ActivatedRoute,private router: Router,private data: DataService) {
-    this.plays = [];
-   }
+  message!: string;
+  plays: Play[] = [];
+  theaterId!: Guid;
+  faPlus = faPlus;
+  user: User = JSON.parse(localStorage.getItem('user') || '{}');
+  isAdmin: boolean = false;
+
+  constructor(
+    private playService: PlayService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private data: DataService
+  ) {}
 
   ngOnInit(): void {
-    /* this.playService.getPlays().subscribe((plays) => (this.plays = plays)); */
+    if (this.user.role == 1) {
+      this.isAdmin = true;
+    }
     this.theaterId = Guid.parse(this.route.snapshot.params['id']);
-    this.playService.getPlayByTheaterId(this.theaterId).subscribe((plays) => (this.plays = plays));
-   /*  this.route.paramMap.subscribe((params) => {
-      this.theaterId = Guid.parse(params.get('id')!);
-      console.log(this.theaterId);
-      }); */
-      this.data.currentMessage.subscribe(message => this.message = message);
+    this.playService
+      .getPlayByTheaterId(this.theaterId)
+      .subscribe((plays) => (this.plays = plays));
+    this.data.currentMessage.subscribe((message) => (this.message = message));
   }
 
   onClick() {
     this.data.changeMessage(this.route.snapshot.params['id']);
-    this.router.navigate(['/plays/play-form/form'])
+    this.router.navigate(['/plays/play-form/form']);
   }
 
-  deletePlay(play: Play){
-    this.playService.deletePlay(play).subscribe(() => (this.plays = this.plays.filter(t => t.id !== play.id)));
+  deletePlay(play: Play) {
+    this.playService
+      .deletePlay(play)
+      .subscribe(
+        () => (this.plays = this.plays.filter((t) => t.id !== play.id))
+      );
   }
 }

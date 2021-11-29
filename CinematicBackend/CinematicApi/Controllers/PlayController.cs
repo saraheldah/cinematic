@@ -2,8 +2,6 @@ using System;
 using Cinematic.Business.DTO;
 using Cinematic.Business.Managers;
 using Cinematic.DataAccess.Entities;
-using Cinematic.DataAccess.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

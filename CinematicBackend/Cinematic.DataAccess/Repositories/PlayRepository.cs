@@ -24,7 +24,7 @@ namespace Cinematic.DataAccess.Repositories
         public Play Get(Guid id)
         {
             var filter = Builders<Play>.Filter.Eq("Id",id);
-            return _playCollection.Find(filter).First();
+            return _playCollection.Find(filter).FirstOrDefault();
         }
         
         public List<Play> GetPlayByTheaterId(Guid id)

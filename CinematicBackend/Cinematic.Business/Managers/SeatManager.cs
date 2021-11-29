@@ -11,38 +11,27 @@ namespace Cinematic.Business.Managers
 {
     public class SeatManager : ISeatManager
     {
-        protected readonly ISeatRepository _seatRepository;
-        protected readonly IUserRepository _userRepository;
-        protected readonly IMapper _mapper;
-        public SeatManager(ISeatRepository seatRepository, IUserRepository userRepository,IMapper mapper)
+        private readonly ISeatRepository _seatRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IPlayRepository _playRepository;
+        private readonly IMapper _mapper;
+
+        public SeatManager(ISeatRepository seatRepository, IUserRepository userRepository,
+            IPlayRepository playRepository, IMapper mapper)
         {
             _seatRepository = seatRepository;
             _userRepository = userRepository;
+            _playRepository = playRepository;
             _mapper = mapper;
         }
-        
+
         public List<SeatDTO> GetAll()
         {
             var seatEntityList = _seatRepository.GetAll().ToList();
-            var userEntityList = _userRepository.GetAll().ToList();
             var seatDtoList = _mapper.Map<List<SeatDTO>>(seatEntityList);
-            // foreach (var seatDto in seatDtoList)
-            // {
-            //     var userEntities = userEntityList.ToList();
-            //     seatDto.ReservedBy = userEntities
-            //         .Where(x => x.Id == seatDto.ReservedBy.Id)
-            //         .Select(y =>
-            //             new UserDTO()
-            //             {
-            //                 Id = y.Id,
-            //                 Email = y.Email,
-            //                 Phone = y.Phone,
-            //                 Password = y.Password
-            //             }).ToList();
-            // }
             return seatDtoList;
         }
-        
+
         public SeatDTO Get(Guid id)
         {
             var seatEntity = _seatRepository.Get(id);
@@ -50,39 +39,78 @@ namespace Cinematic.Business.Managers
             var seatDto = _mapper.Map<SeatDTO>(seatEntity);
             return seatDto;
         }
-        
-        public void Add(Seat newSeat)
+
+        public void Add(List<SeatDTO> seatDtos)
         {
-            _seatRepository.Add(newSeat);
+            var seats = _mapper.Map<List<Seat>>(seatDtos);
+            _seatRepository.Add(seats);
+        }
+
+        public List<SeatDTO> GetPendingSeats()
+        {
+            var seatsEntity = _seatRepository.GetPendingSeats();
+
+            if (seatsEntity == null)
+                throw new Exception("seat not available");
+            var seatDtoList = _mapper.Map<List<SeatDTO>>(seatsEntity);
+            foreach (var seat in seatDtoList)
+            {
+                var playEntity = _playRepository.Get(seat.PlayId);
+                seat.Play = _mapper.Map<PlayDTO>(playEntity);
+                var userEntity = _userRepository.Get(seat.UserId);
+                seat.User = _mapper.Map<UserDTO>(userEntity);
+            }
+            return seatDtoList;
         }
         
-        public Seat SeatEntity(string row, string number, Guid theaterId,Guid playId,Guid userId)
+        public List<SeatDTO> GetSeats(Guid playId,Guid userId)
         {
-            Seat newSeat = new Seat
+            var seatsEntity = _seatRepository.GetSeats(playId,userId);
+            if (seatsEntity == null)
+                throw new Exception("seat not available");
+            var seatDtoList = _mapper.Map<List<SeatDTO>>(seatsEntity);
+            // foreach (var seat in seatDtoList)
+            // {
+            //     var playEntity = _playRepository.Get(seat.PlayId);
+            //     seat.Play = _mapper.Map<PlayDTO>(playEntity);
+            //     var userEntity = _userRepository.Get(seat.UserId);
+            //     seat.User = _mapper.Map<UserDTO>(userEntity);
+            // }
+            return seatDtoList;
+        }
+
+        public Seat SeatEntity(string row, string number, Guid theaterId, Guid playId, Guid userId)
+        {
+            var newSeat = new Seat
             {
-                Row = row, 
-                Number = number, 
+                Row = row,
+                Number = number,
                 TheaterId = theaterId,
             };
             return newSeat;
         }
-        
-        public void Update(Guid id, Seat updatedSeat)
+
+        public void Accept(Guid id)
         {
-            _seatRepository.Update(id,updatedSeat);
+            _seatRepository.Accept(id);
         }
         
-        public Seat UpdatedSeatEntity(string row, string number, Guid theaterId,Guid playId,Guid userId)
+        public void Decline(Guid id)
         {
-            Seat updatedSeat = new Seat
+            _seatRepository.Decline(id);
+        }
+
+        public Seat UpdatedSeatEntity(string row, string number, Guid theaterId, Guid playId, Guid userId)
+        {
+            var updatedSeat = new Seat
             {
-                Row = row, 
-                Number = number, 
+                Row = row,
+                Number = number,
                 TheaterId = theaterId,
             };
             return updatedSeat;
         }
-        
+
         public void Delete(Guid seatId)
         {
             _seatRepository.Delete(seatId);

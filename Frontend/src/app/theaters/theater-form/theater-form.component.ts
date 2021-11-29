@@ -62,7 +62,6 @@ export class TheaterFormComponent implements OnInit {
       var updatedTheater: Theater = {
         name: this.theaterForm.get('name')?.value.toUpperCase(),
         location: this.theaterForm.get('location')?.value.toUpperCase(),
-        /* seats: this.theaterForm.get('seatsNumber')?.value, */
       };
       this.theaterService.updateTheater(updatedTheater,id).subscribe();
       this.router.navigate(['./theaters']);
@@ -74,7 +73,6 @@ export class TheaterFormComponent implements OnInit {
       const newTheater: Theater = {
         name: this.theaterForm.get('name')?.value.toUpperCase(),
         location: this.theaterForm.get('location')?.value.toUpperCase(),
-        /* seats: this.theaterForm.get('seatsNumber')?.value, */
       };
       this.theaterService.addTheater(newTheater).subscribe(() => (this.theaters));
       this.router.navigate(['./theaters']);

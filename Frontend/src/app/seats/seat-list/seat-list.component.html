@@ -10,35 +10,32 @@
             <small>N/A</small>
         </li>
         <li>
-            <div class="seat occupied"></div>
+            <div class="seat seat-occupied"></div>
             <small>Occupied</small>
         </li>
         <li>
-            <div class="seat selected"></div>
+            <div class="seat seat-selected"></div>
             <small>Selected</small>
         </li>
         <li>
-            <div class="seat confirmed"></div>
+            <div class="seat seat-confirmed"></div>
             <small>Confirmed</small>
         </li>
         <li>
-            <div class="seat declined"></div>
+            <div class="seat seat-declined"></div>
             <small>Declined</small>
         </li>
     </ul>
     <div class="container">
         <div class="screen"></div>
         <div *ngFor="let row of rows" class="row justify-content-center">
-            <div *ngFor="let index of seatsPerRow" [ngClass]="styleSeat(row,index)" (click)="clickSeat(row,index)">
+            <div *ngFor="let index of seatsPerRow" [ngClass]="seatStatus(row,index)!" (click)="clickSeat(row,index)">
             </div>
         </div>
     </div>
     
   <div class="row">
-    <button type="button" class="btn btn-secondary mr-2" [disabled]="selectedSeats.length === 0 || confirmed" (click)="confirmSeats()">
-        Confirm
-    </button>
-        <button type="button" class="btn btn-success mr-2">Reserve</button>
+        <button type="button" class="btn btn-danger mr-2" (click)="reserveSeats()">Reserve</button>
     </div>
 
 </div>

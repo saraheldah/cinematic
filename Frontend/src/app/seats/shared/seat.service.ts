@@ -6,23 +6,31 @@ import { Seat } from './seat.model';
 import { Guid } from 'guid-typescript';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SeatService {
   private static Seats: Seat[];
   baseUrl = environment.apiUrl + 'Seat';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getSeats(): Observable<Seat[]>{
-    return this.http.get<Seat[]>(this.baseUrl);
+  getSeats(playId?: Guid,userId?: Guid): Observable<Seat[]> {
+    return this.http.get<Seat[]>(this.baseUrl + `/Seats?playId=${playId}&userId=${userId}`);
   }
 
-  getReservedSeats(playId?: Guid) {
-    return this.http.get<Seat[]>(this.baseUrl + `/Reserved?playId=${playId}`);
+  getPendingReservations(): Observable<Seat[]> {
+    return this.http.get<Seat[]>(`${this.baseUrl}/PendingSeats`);
   }
 
-  /* reserveSeats(seats: Seat[]) {
-    return this.http.post(this.baseUrl + '/Reserve', seats);
-  } */
+  declineReservation(id?: Guid): Observable<Seat> {
+    return this.http.post<Seat>(`${this.baseUrl}/Decline/${id}`, null);
+  }
+
+  acceptReservation(id?: Guid): Observable<Seat> {
+    return this.http.post<Seat>(`${this.baseUrl}/Accept/${id}`, null);
+  }
+
+  reserveSeats(seats: Seat[], id?: Guid): Observable<Seat[]> {
+    return this.http.post<Seat[]>(`${this.baseUrl}/Create?id=${id}`, seats);
+  }
 }

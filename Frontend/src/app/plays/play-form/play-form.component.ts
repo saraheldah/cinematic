@@ -20,6 +20,7 @@ export class PlayFormComponent implements OnInit {
   message!: string;
   theaterId!: Guid;
   updateSuccess: boolean = false;
+  addSuccess: boolean = false;
 
   constructor(
     private playService: PlayService,
@@ -81,7 +82,7 @@ export class PlayFormComponent implements OnInit {
         duration: this.playForm.get('duration')?.value,
       };
       this.playService.addPlay(newPlay,this.theaterId).subscribe();
-      this.router.navigate(['/plays',this.theaterId]);
+      this.addSuccess = true;
     }
   }
 }

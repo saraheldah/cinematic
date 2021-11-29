@@ -3,6 +3,7 @@ import { Play } from '../shared/play.model';
 import { faTimes, faEdit, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 import { Guid } from 'guid-typescript';
+import { User } from 'src/app/login/shared/user.model';
 
 
 
@@ -17,14 +18,18 @@ export class PlayItemComponent implements OnInit {
   faTimes = faTimes;
   faEdit = faEdit;
   faArrow = faArrowRight;
+  user: User = JSON.parse(localStorage.getItem('user') || '{}');
+  isAdmin: boolean = false;
 
   constructor(private router: Router) { }
 
   ngOnInit(): void {
+    if(this.user.role == 1){this.isAdmin = true}
   }
 
   onClick(playId?: Guid) {
-    this.router.navigate(['/seats',playId])
+    if(!this.isAdmin){this.router.navigate(['/seats',playId])}
+    else this.router.navigate(['/pending'])
   }
 
   onDelete(play: Play){

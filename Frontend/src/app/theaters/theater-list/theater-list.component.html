@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        <button class="Btn" routerLink="/theaters/theater-form" style="margin-top: 30px;">
+        <button *ngIf="isAdmin" class="Btn" routerLink="/theaters/theater-form" style="margin-top: 30px;">
             Add Theater <fa-icon [ngStyle]="{'color': '#fffff'}" [icon]="faPlus"></fa-icon>
         </button>
     </section>

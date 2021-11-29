@@ -12,12 +12,12 @@ namespace Cinematic.Business.Managers
         List<SeatDTO> GetAll();
         SeatDTO Get(Guid id);
 
-        void Add(Seat newSeat);
-
+        void Add(List<SeatDTO> seats);
+        List<SeatDTO> GetPendingSeats();
         Seat SeatEntity(string row, string number, Guid theaterId,Guid playId,Guid userId);
-
-        void Update(Guid id, Seat updatedSeat);
-
+        List<SeatDTO> GetSeats(Guid playId, Guid userId);
+        void Accept(Guid id);
+        void Decline(Guid id);
         Seat UpdatedSeatEntity(string row, string number, Guid theaterId,Guid playId,Guid userId);
 
         void Delete(Guid seatId);

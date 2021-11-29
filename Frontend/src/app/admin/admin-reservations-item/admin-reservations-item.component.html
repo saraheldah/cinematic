@@ -1,0 +1,14 @@
+<div class="card">
+    <div class="card-body">
+        <h1 class="card-title text-primary mb-0 pt-4">Seat 
+            {{seat.row}}{{seat.number}} in movie {{seat?.play?.title}} is requested by {{seat?.user?.username}}
+        </h1>
+        <p class="card-text text-white"></p>
+        <a class="btn" (click)="onAccept(seat.id)">
+            <fa-icon [ngStyle]="{'color': '#b64747'}" [icon]="faCheck"></fa-icon>
+        </a>
+        <a  class="btn" (click)="onDecline(seat.id)">
+            <fa-icon [ngStyle]="{'color': '#b64747'}" [icon]="faTimes"></fa-icon>
+        </a>
+    </div>
+</div>

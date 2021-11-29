@@ -7,10 +7,13 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link page-scroll text-primary" [routerLink]="['']">Home</a>
+                        <a class="nav-link page-scroll text-primary" [routerLink]="['/landing-page']">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link page-scroll text-primary" [routerLink]="['/theaters']">Theaters</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll text-primary" (click)="logout()">Log Out</a>
                     </li>
                 </ul>
             </div>
@@ -20,10 +23,11 @@
         <div class="row vh-md-100">
             <div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
                 <h1 class="Header text-capitalize">Quickly book your ticket with Cinematic</h1>
-                <p class="lead py-3">Cinematic is a platform that allows you to book your ticket
-                    in minutes.</p>
-                <button class="btn btn-primary" (click)="btnClick()">
+                <button *ngIf="!isAdmin" class="btn btn-primary" (click)="btnClick()">
                     Book Tickets <fa-icon [icon]="faArrow" [ngStyle]="{'margin-left': '10px'}"></fa-icon>
+                </button>
+                <button *ngIf="isAdmin" class="btn btn-primary" (click)="btnClick()">
+                    Go to Theaters <fa-icon [icon]="faArrow" [ngStyle]="{'margin-left': '10px'}"></fa-icon>
                 </button>
             </div>
         </div>

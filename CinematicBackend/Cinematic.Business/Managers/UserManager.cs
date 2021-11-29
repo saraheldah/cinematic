@@ -11,8 +11,8 @@ namespace Cinematic.Business.Managers
 {
     public class UserManager : IUserManager
     {
-        protected readonly IUserRepository _userRepository;
-        protected readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
         public UserManager(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
@@ -34,10 +34,6 @@ namespace Cinematic.Business.Managers
             return userDto;
         }
         
-        public void Add(User newUser)
-        {
-            _userRepository.Add(newUser);
-        }
         
         public User UserEntity(string email, string password, string phone,Role role)
         {
@@ -49,11 +45,6 @@ namespace Cinematic.Business.Managers
                 Role = role
             };
             return newUser;
-        }
-        
-        public void Update(Guid id, User updatedUser)
-        {
-            _userRepository.Update(id,updatedUser);
         }
         
         public User UpdatedUserEntity(string email, string password, string phone,Role role)

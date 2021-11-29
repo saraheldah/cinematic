@@ -1,0 +1,14 @@
+<body class="bg-dark">
+    <section class="py-7 bg-dark section-angle top-left bottom-left PlaysContainer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mx-auto text-center">
+                    <h2 class="heading-black text-white">List of Pending Reservations</h2>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <app-admin-reservations-item *ngFor="let seat of seats" [seat]="seat"></app-admin-reservations-item>
+            </div>
+        </div>
+    </section>
+</body>

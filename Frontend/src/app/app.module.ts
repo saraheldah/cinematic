@@ -5,13 +5,14 @@ import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { AdminComponent } from './admin/admin.component';
+import { LoginComponent } from './login/login/login.component';
+import { AdminComponent } from './admin/admin-login/admin.component';
 import { LandingPageComponent } from './landing-page/landing-page/landing-page.component';
 import { SeatListComponent } from './seats/seat-list/seat-list.component';
-import { SeatFormComponent } from './seats/seat-form/seat-form.component';
-import { SeatItemComponent } from './seats/seat-item/seat-item.component';
-import { RegisterComponent } from './register/register/register.component';
+import { RegisterComponent } from './login/register/register.component';
+import { AdminReservationsComponent } from './admin/admin-reservations/admin-reservations.component';
+import { AdminReservationsItemComponent } from './admin/admin-reservations-item/admin-reservations-item.component';
+import { AuthGuard } from 'src/_guards/auth-guard';
 
 @NgModule({
   declarations: [
@@ -20,9 +21,9 @@ import { RegisterComponent } from './register/register/register.component';
     AdminComponent,
     LandingPageComponent,
     SeatListComponent,
-    SeatFormComponent,
-    SeatItemComponent,
     RegisterComponent,
+    AdminReservationsComponent,
+    AdminReservationsItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -31,10 +32,12 @@ import { RegisterComponent } from './register/register/register.component';
     RouterModule.forRoot([
       {
         path: 'theaters',
+        canActivate: [AuthGuard],
         loadChildren: () => import('./theaters/theaters.module').then((m) => m.TheatersModule),
       },
       {
         path: 'plays',
+        canActivate: [AuthGuard],
         loadChildren: () => import('./plays/plays.module').then((m) => m.PlaysModule),
       },
       {
@@ -63,12 +66,16 @@ import { RegisterComponent } from './register/register/register.component';
         component: AdminComponent,
       },
       {
-        path: '',
+        path: 'landing-page',
         component: LandingPageComponent,
       },
       {
+        path: 'pending',
+        component: AdminReservationsComponent,
+      },
+      {
         path: '**',
-        redirectTo: '',
+        redirectTo: 'login',
         pathMatch: 'full',
       },
     ]),

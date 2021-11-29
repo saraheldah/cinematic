@@ -13,7 +13,11 @@ namespace Cinematic.Business.DTO
         
         public ReservationStatus Status { get; set; }
         
-        public UserDTO ReservedBy { get; set; }
+        public PlayDTO Play { get; set; }
+        
+        public UserDTO User { get; set; }
+        
+        public Guid UserId { get; set; }
         
         public Guid PlayId { get; set; }
     }

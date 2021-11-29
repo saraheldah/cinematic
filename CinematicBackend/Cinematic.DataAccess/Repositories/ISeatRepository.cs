@@ -8,9 +8,12 @@ namespace Cinematic.DataAccess.Repositories
     {
         List<Seat> GetAll();
         Seat Get(Guid id);
-        // List<Seat> Find(Guid playId);
-        void Add(Seat seat);
+        List<Seat> GetSeats(Guid playId, Guid userId);
+        List<Seat> GetPendingSeats();
+        void Add(List<Seat> seats);
+        void Accept(Guid id);
+        void Decline(Guid id);
+
         void Delete(Guid seatId);
-        void Update(Guid id,Seat seat);
     }
 }
